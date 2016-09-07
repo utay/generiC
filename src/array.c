@@ -10,9 +10,12 @@ Array* array_new(ArrayConf *conf)
     size_t capacity;
     float exp_factor;
 
-    if (conf == NULL) {
+    if (!conf) {
         capacity = DEFAULT_CAPACITY;
         exp_factor = DEFAULT_EXPANSION_FACTOR;
+    } else {
+        capacity = conf->capacity;
+        exp_factor = conf->exp_factor;
     }
 
     array->buffer     = malloc(capacity * sizeof(void*));
@@ -26,7 +29,7 @@ Error array_add(Array *array, void *element)
 {
     if (array->size >= array->capacity) {
         Error err = expand_capacity(array);
-        if (err != NULL)
+        if (err)
             return err;
     }
 
@@ -36,9 +39,10 @@ Error array_add(Array *array, void *element)
     return NULL;
 }
 
-Error expand_capacity(Array *array) {
+Error expand_capacity(Array *array)
+{
     if (array->capacity == CC_MAX_ELEMENTS)
-        return "Max capacity";
+        return "Error: Max capacity";
 
     array->capacity *= array->exp_factor;
     array->buffer = realloc(array->buffer, array->capacity * sizeof(void*));
@@ -46,20 +50,40 @@ Error expand_capacity(Array *array) {
     return NULL;
 }
 
-Error array_remove(Array *array, void *element) {
-    bool present = false;
+Error array_remove(Array *array, void *element)
+{
+    size_t index;
 
+    Error err = array_index_of(array, element, &index);
+
+    if (!err) {
+        array->buffer[index] = NULL;
+        return NULL;
+    }
+
+    return err;
+}
+
+Error array_index_of(Array *array, void *element, size_t *index)
+{
     for (size_t i = 0; i < array->size; ++i) {
         if (array->buffer[i] == element) {
-            array->buffer[i] = NULL;
-            present = true;
+            *index = i;
+            return NULL;
         }
     }
 
-    if (!present)
-        return "Element not found";
+    return "Error: Element not found";
+}
 
-    return NULL;
+size_t array_size(Array *array)
+{
+    return array->size;
+}
+
+size_t array_capacity(Array *array)
+{
+    return array->capacity;
 }
 
 void array_destroy(Array *array) {

@@ -19,6 +19,9 @@ Array* array_new(ArrayConf *conf);
 Error array_add(Array *array, void *element);
 Error expand_capacity(Array *array);
 Error array_remove(Array *array, void *element);
+Error array_index_of(Array *array, void *element, size_t *index);
+size_t array_size(Array *array);
+size_t array_capacity(Array *array);
 void array_destroy(Array *array);
 
 #endif // GENERIC_ARRAY_H

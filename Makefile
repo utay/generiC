@@ -1,6 +1,6 @@
 CC=gcc
 
-CFLAGS= -Wall -Wextra -std=c99 -O3
+CFLAGS= -Wall -g -Wextra -std=c99 -O3
 
 SRC_TEST_ARRAY= test/test_array.c src/array.c test/test.c
 OBJ_TEST_ARRAY= ${SRC_TEST_ARRAY:.c=.o}
