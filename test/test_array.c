@@ -4,6 +4,7 @@
 void test_array_add();
 void test_array_remove();
 void test_array_index_of();
+void test_array_contains();
 void test_array_size();
 void test_array_capacity();
 
@@ -14,6 +15,7 @@ int main()
     test_array_add();
     test_array_remove();
     test_array_index_of();
+    test_array_contains();
     test_array_size();
     test_array_capacity();
 
@@ -93,6 +95,25 @@ void test_array_size()
     array_destroy(array);
 }
 
+void test_array_contains()
+{
+    Array *array = array_new(NULL);
+
+    int a = 1;
+    for (size_t i = 0; i < 25; ++i) {
+        array_add(array, &a);
+    }
+
+    int b = 42;
+    array_add(array, &b);
+
+    gc_assert(array_contains(array, &a) == 25 &&
+            array_contains(array, &b) == 1,
+            gc_msg("array_contains: Not expected number of matches"));
+
+    array_destroy(array);
+}
+
 void test_array_capacity()
 {
     ArrayConf conf = { .exp_factor = 2, .capacity = 10 };
@@ -100,4 +121,6 @@ void test_array_capacity()
 
     gc_assert(array_capacity(array) == 10,
             gc_msg("array_capacity: Not expected capacity"));
+
+    array_destroy(array);
 }

@@ -76,6 +76,19 @@ Error array_index_of(Array *array, void *element, size_t *index)
     return "Error: Element not found";
 }
 
+size_t array_contains(Array *array, void *element)
+{
+    size_t nb_matches = 0;
+
+    for (size_t i = 0; i < array->size; ++i) {
+        if (array->buffer[i] == element) {
+            ++nb_matches;
+        }
+    }
+
+    return nb_matches;
+}
+
 size_t array_size(Array *array)
 {
     return array->size;
