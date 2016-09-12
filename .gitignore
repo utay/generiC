@@ -36,4 +36,5 @@
 *.su
 
 # Binaries
-test_array
+test/test_array
+test/test_binary_tree
