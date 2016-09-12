@@ -58,10 +58,34 @@ Error array_remove(Array *array, void *element)
 
     if (!err) {
         array->buffer[index] = NULL;
+        if (index != array->size - 1) {
+            size_t block_size = (array->size - index) * sizeof(void*);
+
+            memmove(&(array->buffer[index]),
+                    &(array->buffer[index + 1]),
+                    block_size);
+        }
+        --array->size;
         return NULL;
     }
 
     return err;
+}
+
+Error array_remove_last(Array *array)
+{
+    if (!array->size)
+        return "Error: Array is empty";
+
+    return array_remove(array, array->buffer[array->size - 1]);
+}
+
+void* array_get_last(Array *array)
+{
+    if (!array->size)
+        return NULL;
+
+    return array->buffer[array->size - 1];
 }
 
 Error array_index_of(Array *array, void *element, size_t *index)
@@ -99,7 +123,18 @@ size_t array_capacity(Array *array)
     return array->capacity;
 }
 
-void array_destroy(Array *array) {
+void array_destroy(Array *array)
+{
     free(array->buffer);
     free(array);
+}
+
+void array_print(Array *array, size_t begin, size_t end)
+{
+    if (begin > end || end > array->size)
+        return;
+
+    for (size_t i = begin; i < end; ++i) {
+        printf("[%zu] %s\n", i, (char*) array->buffer[i]);
+    }
 }

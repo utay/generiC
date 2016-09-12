@@ -7,6 +7,8 @@ void test_array_index_of();
 void test_array_contains();
 void test_array_size();
 void test_array_capacity();
+void test_array_remove_last();
+void test_array_get_last();
 
 int main()
 {
@@ -14,10 +16,12 @@ int main()
 
     test_array_add();
     test_array_remove();
+    test_array_remove_last();
     test_array_index_of();
     test_array_contains();
     test_array_size();
     test_array_capacity();
+    test_array_get_last();
 
     return gc_get_status();
 }
@@ -59,6 +63,48 @@ void test_array_remove()
     Error err = array_remove(array, &a);
     gc_assert(err != NULL,
             gc_msg("array_remove: Element found after being removed"));
+
+    array_destroy(array);
+}
+
+void test_array_remove_last()
+{
+    Array *array = array_new(NULL);
+
+    Error err = array_remove_last(array);
+    gc_assert(err != NULL,
+            gc_msg("array_remove_last: Array empty"));
+
+    int a = 1;
+    int b = 1;
+    int c = 1;
+
+    array_add(array, &a);
+    array_add(array, &b);
+    array_add(array, &c);
+
+    array_remove_last(array);
+    gc_assert(array->size == 2,
+            gc_msg("array_remove_last: Size not updated"));
+    gc_assert(array->buffer[1] == &b,
+            gc_msg("array_remove_last: Wrong element removed"));
+
+    array_destroy(array);
+}
+
+void test_array_get_last()
+{
+    Array  *array = array_new(NULL);
+
+    int a, b, c = 1;
+
+    array_add(array, &a);
+    array_add(array, &b);
+    array_add(array, &c);
+
+    int* res = (int*) array_get_last(array);
+    gc_assert(*res == c,
+            gc_msg("array_get_last: Wrong last element"));
 
     array_destroy(array);
 }
