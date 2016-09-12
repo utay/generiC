@@ -5,7 +5,7 @@
 
 Array* array_new(ArrayConf *conf)
 {
-    Array *array = calloc(1, sizeof(Array));
+    Array *array = malloc(sizeof(Array));
 
     size_t capacity;
     float exp_factor;
